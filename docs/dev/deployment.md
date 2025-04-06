@@ -1,5 +1,6 @@
 # Deployment Guide
 
+<<<<<<< HEAD
 ## Docker Compose
 ```bash
 docker-compose up -d --build
@@ -34,3 +35,6 @@ gcloud run deploy unilock --image gcr.io/PROJECT_ID/unilock
 ## Monitoring
 - Prometheus: `/metrics` endpoint
 - Health checks: `/health`
+=======
+Instructions for deploying the application.
+>>>>>>> db91a5192e96e6e8b41e9bb543a166b3257a9e05

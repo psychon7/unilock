@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -70,3 +71,12 @@ if __name__ == "__main__":
         reload=True,
         log_level="info"
     )
+=======
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to Unilock"}
+>>>>>>> db91a5192e96e6e8b41e9bb543a166b3257a9e05

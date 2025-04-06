@@ -1,5 +1,6 @@
 # Authentication API
 
+<<<<<<< HEAD
 ## Overview
 Handles JWT token generation and verification
 
@@ -25,3 +26,6 @@ Generates a JWT access token
 **Responses**:
 - 200: Returns access token
 - 401: Unauthorized
+=======
+Details about the authentication endpoints.
+>>>>>>> db91a5192e96e6e8b41e9bb543a166b3257a9e05

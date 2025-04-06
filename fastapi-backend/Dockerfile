@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Build stage
 FROM python:3.9-slim as builder
 
@@ -28,3 +29,15 @@ RUN mkdir -p /app/logs
 
 # Run the application
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+=======
+FROM python:3.9
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY . .
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+>>>>>>> db91a5192e96e6e8b41e9bb543a166b3257a9e05

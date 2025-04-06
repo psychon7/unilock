@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Welcome to Unilock Documentation
 
 ![Unilock Logo](img/logo.png){ width=200 }
@@ -31,3 +32,8 @@ app.include_router(Unilock().router)
 !!! success "Enterprise Ready"
     - Role-based access control  
     - Audit logging
+=======
+# Documentation
+
+Welcome to the Unilock documentation.
+>>>>>>> db91a5192e96e6e8b41e9bb543a166b3257a9e05

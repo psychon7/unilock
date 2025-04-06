@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .PHONY: setup test lint run docker-up docker-down docs
 
 VENV = venv
@@ -34,3 +35,10 @@ docs:
 pre-commit:
 	$(MAKE) lint
 	$(MAKE) test
+=======
+test:
+	pytest tests/
+
+run:
+	uvicorn app.main:app --reload
+>>>>>>> db91a5192e96e6e8b41e9bb543a166b3257a9e05

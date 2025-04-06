@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Contributor Covenant Code of Conduct
 
 ## Our Pledge
@@ -16,3 +17,6 @@ Instances of abusive behavior may be reported to the project team. All complaint
 ## Attribution
 This Code of Conduct is adapted from the [Contributor Covenant][homepage].
 [homepage]: https://www.contributor-covenant.org
+=======
+Please read our code of conduct for contributing to this project.
+>>>>>>> db91a5192e96e6e8b41e9bb543a166b3257a9e05
