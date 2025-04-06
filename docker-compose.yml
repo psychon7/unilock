@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  backend:
+    build: ./fastapi-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=development
