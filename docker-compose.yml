@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8081:8080"
+    command:
+      - start-dev
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+    depends_on:
+      - db
+      - fastapi
+
+  fastapi:
+    build: ./fastapi-backend
+    container_name: fastapi
+    ports:
+      - "8000:8000"
+    environment:
+      - KEYCLOAK_URL=http://keycloak:8080
+      - DATABASE_URL=postgresql://identity:identity@db:5432/identity_db
+    volumes:
+      - ./fastapi-backend:/app
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: postgres:14
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: identity
+      POSTGRES_PASSWORD: identity
+      POSTGRES_DB: identity_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+  keycloak_data:

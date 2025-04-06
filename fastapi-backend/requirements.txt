@@ -1,0 +1,13 @@
+fastapi==0.95.0
+uvicorn[standard]==0.22.0 # Use [standard] for better performance
+python-keycloak-client==2.6.1 # Correct package name for python-keycloak
+sqlalchemy==1.4.46
+alembic==1.10.3
+loguru==0.6.0
+pydantic[dotenv]==1.10.7
+requests==2.28.2
+psycopg2-binary # For PostgreSQL connection with SQLAlchemy
+python-dotenv # For loading .env files (used by pydantic[dotenv])
+python-jose[cryptography]==3.3.0 # For JWT operations
+passlib==1.7.4 # For password hashing
+bcrypt==4.0.1 # For secure password hashing

@@ -1,0 +1,29 @@
+site_name: Unilock Docs
+site_url: https://yourusername.github.io/unilock
+repo_url: https://github.com/yourusername/unilock
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.indexes
+    - toc.integrate
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+
+nav:
+  - Home: index.md
+  - API Reference:
+    - Authentication: api/auth.md
+    - Domains: api/domains.md
+  - Development:
+    - Setup: dev/setup.md
+    - Testing: dev/testing.md
+    - Deployment: dev/deployment.md
+  - Contributing: contributing.md
