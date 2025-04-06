@@ -74,3 +74,153 @@ class KeycloakService:
                 status_code=404,
                 detail=f"Realm not found or inaccessible: {realm}"
             )
+
+    async def list_clients(self, realm: str):
+        """List all clients (applications) in the specified realm"""
+        try:
+            self.admin.realm_name = realm
+            clients = self.admin.get_clients()
+            logger.info(f"Retrieved {len(clients)} clients for realm {realm}")
+            # Optionally filter or map fields if needed before returning
+            return clients
+        except Exception as e:
+            logger.error(f"Failed to list clients for realm {realm}: {e}")
+            raise HTTPException(
+                status_code=400,
+                detail=f"Keycloak error while listing clients: {str(e)}"
+            )
+
+    async def list_identity_providers(self, realm: str):
+        """List all identity providers in the specified realm"""
+        try:
+            self.admin.realm_name = realm
+            idps = self.admin.get_idps()
+            logger.info(f"Retrieved {len(idps)} identity providers for realm {realm}")
+            return idps
+        except Exception as e:
+            logger.error(f"Failed to list identity providers for realm {realm}: {e}")
+            raise HTTPException(
+                status_code=400,
+                detail=f"Keycloak error while listing identity providers: {str(e)}"
+            )
+
+    async def get_identity_provider(self, realm: str, alias: str):
+        """Get details of a specific identity provider"""
+        try:
+            self.admin.realm_name = realm
+            idp = self.admin.get_idp(alias)
+            logger.info(f"Retrieved identity provider {alias} for realm {realm}")
+            return idp
+        except Exception as e:
+            logger.error(f"Failed to get identity provider {alias} for realm {realm}: {e}")
+            raise HTTPException(
+                status_code=404,
+                detail=f"Identity provider not found or inaccessible: {alias}"
+            )
+
+    async def update_identity_provider_state(self, realm: str, alias: str, enabled: bool):
+        """Enable or disable an identity provider"""
+        try:
+            self.admin.realm_name = realm
+            idp = self.admin.get_idp(alias)
+            idp['enabled'] = enabled
+            self.admin.update_idp(alias, idp)
+            logger.info(f"Updated identity provider {alias} state to enabled={enabled} in realm {realm}")
+            return {"status": "success", "enabled": enabled}
+        except Exception as e:
+            logger.error(f"Failed to update identity provider {alias} state in realm {realm}: {e}")
+            raise HTTPException(
+                status_code=400,
+                detail=f"Failed to update identity provider state: {str(e)}"
+            )
+
+    async def get_theme(self, realm: str) -> dict:
+        """Get theme configuration for a realm"""
+        try:
+            self.admin.realm_name = realm
+            realm_data = self.admin.get_realm()
+            
+            # Extract theme-related settings from realm data
+            theme_config = {
+                "primaryColor": realm_data.get("attributes", {}).get("primaryColor", "#3b82f6"),
+                "secondaryColor": realm_data.get("attributes", {}).get("secondaryColor", "#6b7280"),
+                "logoUrl": realm_data.get("attributes", {}).get("logoUrl"),
+                "loginTheme": realm_data.get("loginTheme")
+            }
+            
+            logger.info(f"Retrieved theme config for realm {realm}")
+            return theme_config
+        except Exception as e:
+            logger.error(f"Failed to get theme config for realm {realm}: {e}")
+            raise HTTPException(
+                status_code=404,
+                detail=f"Failed to get theme configuration: {str(e)}"
+            )
+
+    async def update_theme(self, realm: str, theme_config: dict) -> dict:
+        """Update theme configuration for a realm"""
+        try:
+            self.admin.realm_name = realm
+            realm_data = self.admin.get_realm()
+            
+            # Update realm attributes with theme config
+            attributes = realm_data.get("attributes", {})
+            attributes.update({
+                "primaryColor": theme_config["primaryColor"],
+                "secondaryColor": theme_config["secondaryColor"],
+            })
+            if theme_config.get("logoUrl"):
+                attributes["logoUrl"] = theme_config["logoUrl"]
+            
+            # Update realm data
+            update_data = {
+                "attributes": attributes,
+                "loginTheme": theme_config.get("loginTheme", realm_data.get("loginTheme"))
+            }
+            
+            self.admin.update_realm(realm, update_data)
+            logger.info(f"Updated theme config for realm {realm}")
+            
+            return await self.get_theme(realm)
+        except Exception as e:
+            logger.error(f"Failed to update theme config for realm {realm}: {e}")
+            raise HTTPException(
+                status_code=400,
+                detail=f"Failed to update theme configuration: {str(e)}"
+            )
+
+    async def upload_logo(self, realm: str, logo_file: bytes, filename: str) -> str:
+        """Upload a logo for a realm and return its URL"""
+        try:
+            # TODO: Implement actual file storage (e.g., S3, local filesystem)
+            # For now, we'll assume a local storage path
+            import os
+            from pathlib import Path
+            
+            # Create logos directory if it doesn't exist
+            logos_dir = Path("static/logos")
+            logos_dir.mkdir(parents=True, exist_ok=True)
+            
+            # Generate unique filename
+            file_ext = os.path.splitext(filename)[1]
+            unique_filename = f"{realm}_logo{file_ext}"
+            file_path = logos_dir / unique_filename
+            
+            # Save the file
+            with open(file_path, "wb") as f:
+                f.write(logo_file)
+            
+            # Generate URL (in production, this would be a CDN or proper static file URL)
+            logo_url = f"/static/logos/{unique_filename}"
+            
+            # Update realm with logo URL
+            await self.update_theme(realm, {"logoUrl": logo_url})
+            
+            logger.info(f"Uploaded logo for realm {realm}")
+            return logo_url
+        except Exception as e:
+            logger.error(f"Failed to upload logo for realm {realm}: {e}")
+            raise HTTPException(
+                status_code=400,
+                detail=f"Failed to upload logo: {str(e)}"
+            )

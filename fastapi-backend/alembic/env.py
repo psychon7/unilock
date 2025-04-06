@@ -1,3 +1,5 @@
+import os
+import sys
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
@@ -5,13 +7,9 @@ from sqlalchemy import pool
 
 from alembic import context
 
-import os
-import sys
-
-# Add the app directory to the path
-base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Add the project root directory to the Python path
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, base_dir)
-sys.path.insert(0, os.path.join(base_dir, "app"))
 
 # Import your models here for 'autogenerate' support
 from app.models.domain import Domain

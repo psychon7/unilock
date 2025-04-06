@@ -1,7 +1,9 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 import uvicorn
 from loguru import logger
+from pathlib import Path
 from app.routes import domains
 from app.core.dependencies import admin_required
 from app.core.settings import settings
@@ -27,6 +29,14 @@ app.add_middleware(
 
 # Configure logging
 logger.add("logs/app.log", rotation="500 MB", retention="10 days")
+
+# Create static directories if they don't exist
+static_dir = Path("static")
+logos_dir = static_dir / "logos"
+logos_dir.mkdir(parents=True, exist_ok=True)
+
+# Mount static files directory
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Include all routers
 from app.routes import auth
